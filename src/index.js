@@ -68,25 +68,30 @@ function Menu({ products }) {
   return (
     <main className='menu'>
       <h2>Our Menu</h2>
-      <div className='pizzas'>
-        {products.map((product, index) => {
-          return (
-            <Pizza
-              key={index}
-              name={product.name}
-              photoImage={product.photoName}
-              ingredients={product.ingredients}
-              price={product.price}
-            />
-          );
-        })}
-      </div>
+      {products.length > 0 ? (
+        <div className='pizzas'>
+          {products.map((product, index) => {
+            return (
+              <Pizza
+                key={index}
+                name={product.name}
+                photoImage={product.photoName}
+                ingredients={product.ingredients}
+                price={product.price}
+                soldOut={product.soldOut}
+              />
+            );
+          })}
+        </div>
+      ) : (
+        "No pizzas available"
+      )}
     </main>
   );
 }
-function Pizza({ name, photoImage, ingredients, price }) {
+function Pizza({ name, photoImage, ingredients, price, soldOut }) {
   return (
-    <div className='pizza'>
+    <div className={soldOut ? "pizza sold-out" : "pizza"}>
       <img src={photoImage} alt={name} />
       <div>
         <h3>{name}</h3>
@@ -104,11 +109,23 @@ function Footer() {
   const isOpen = hour >= openHours && hour < closedHours;
 
   return (
-    // <footer>{new Date().toLocaleTimeString()} - We're currently open!</footer>
     <footer>
-      {isOpen ? "We're currently open!" : "We're currently closed!"}
+      <Order isOpen={isOpen} openHours={openHours} closedHours={closedHours} />
     </footer>
   );
+}
+
+function Order({ isOpen, openHours, closedHours }) {
+  if (isOpen) {
+    return (
+      <div className='order'>
+        <p>We're open until {closedHours}:00. Come and visit us!</p>
+        <button className='btn'>Order online!</button>
+      </div>
+    );
+  } else {
+    return <p>We're current closed. Come back at {openHours}:00!</p>;
+  }
 }
 
 export default App;
